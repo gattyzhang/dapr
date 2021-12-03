@@ -145,6 +145,9 @@ import (
 	"github.com/dapr/components-contrib/middleware/http/ratelimit"
 	"github.com/dapr/components-contrib/middleware/http/sentinel"
 
+	//gatty
+	"github.com/dapr/components-contrib/middleware/http/filter"
+
 	http_middleware_loader "github.com/dapr/dapr/pkg/components/middleware/http"
 	http_middleware "github.com/dapr/dapr/pkg/middleware/http"
 
@@ -476,6 +479,10 @@ func main() {
 						h(ctx)
 					}
 				}, nil
+			}),
+			//gatty
+			http_middleware_loader.New("filter", func(metadata middleware.Metadata) (http_middleware.Middleware, error) {
+				return filter.NewOFilterMiddleware(log).GetHandler(metadata)
 			}),
 			http_middleware_loader.New("oauth2", func(metadata middleware.Metadata) (http_middleware.Middleware, error) {
 				return oauth2.NewOAuth2Middleware().GetHandler(metadata)
